@@ -9,7 +9,8 @@
     "lint": "next lint",
     "generate": "drizzle-kit generate",
     "migrate:up": "node ./src/db/migrate.js",
-    "seed": "node --loader esbuild-register/loader -r esbuild-register ./src/db/seed/index.ts"
+    "seed": "node --loader esbuild-register/loader -r esbuild-register ./src/db/seed/index.ts",
+    "test": "jest"
   },
   "dependencies": {
     "drizzle-orm": "^0.32.1",
@@ -19,14 +20,26 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.14.12",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^18.3.25",
+    "@types/react-dom": "^18.3.7",
+    "babel-jest": "^30.2.0",
     "drizzle-kit": "^0.23.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }
