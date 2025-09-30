@@ -2,17 +2,37 @@
 
 import { useEffect, useState } from "react";
 
-export default function Home() {
+type Advocate = {
+  firstName: string;
+  lastName: string;
+  city: string;
+  degree: string;
+  specialties: string[];
+  yearsOfExperience: string;
+  phoneNumber: string;
+};
+
+export interface ApiClient {
+  getAdvocates(): Advocate[];
+};
+
+class DefaultApiClient implements ApiClient {
+  getAdvocates(): Promise<Advocate[]> {
+    return fetch("/api/advocates")
+      .then(response => response.json())
+      .then(r => r.data);
+  }
+}
+
+export default function Home({ apiClient = new DefaultApiClient() }) {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
 
   useEffect(() => {
     console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
+    apiClient.getAdvocates().then((advocates) => {
+      setAdvocates(advocates);
+      setFilteredAdvocates(advocates);
     });
   }, []);
 
@@ -71,14 +91,14 @@ export default function Home() {
         <tbody>
           {filteredAdvocates.map((advocate) => {
             return (
-              <tr>
+              <tr key={`${advocate.lastName}-${advocate.firstName}`}>
                 <td>{advocate.firstName}</td>
                 <td>{advocate.lastName}</td>
                 <td>{advocate.city}</td>
                 <td>{advocate.degree}</td>
                 <td>
                   {advocate.specialties.map((s) => (
-                    <div>{s}</div>
+                    <div key={`${advocate.lastName}-${s}`}>{s}</div>
                   ))}
                 </td>
                 <td>{advocate.yearsOfExperience}</td>
