@@ -39,7 +39,8 @@ export default function Home({ apiClient = new DefaultApiClient() }) {
   const onChange = (e) => {
     const searchTerm = e.target.value;
 
-    document.getElementById("search-term").innerHTML = searchTerm;
+    // TODO: A ref can do this way better than searching on the dom
+    document.getElementById("search-input").innerHTML = searchTerm;
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
@@ -48,8 +49,7 @@ export default function Home({ apiClient = new DefaultApiClient() }) {
         advocate.lastName.includes(searchTerm) ||
         advocate.city.includes(searchTerm) ||
         advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.specialties.includes(searchTerm)
       );
     });
 
@@ -67,11 +67,8 @@ export default function Home({ apiClient = new DefaultApiClient() }) {
       <br />
       <br />
       <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
+        <label htmlFor="search-input">Search</label>
+        <input id="search-input" style={{ border: "1px solid black" }} onChange={onChange} />
         <button onClick={onClick}>Reset Search</button>
       </div>
       <br />
