@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Advocate = {
   firstName: string;
@@ -27,22 +27,18 @@ class DefaultApiClient implements ApiClient {
 export default function Home({ apiClient = new DefaultApiClient() }) {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const searchRef = useRef(null);
 
   useEffect(() => {
-    console.log("fetching advocates...");
     apiClient.getAdvocates().then((advocates) => {
       setAdvocates(advocates);
       setFilteredAdvocates(advocates);
     });
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
+  const onChange = () => {
+    const searchTerm = searchRef.current.value;
 
-    // TODO: A ref can do this way better than searching on the dom
-    document.getElementById("search-input").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
       return [
         advocate.firstName,
@@ -69,7 +65,12 @@ export default function Home({ apiClient = new DefaultApiClient() }) {
       <br />
       <div>
         <label htmlFor="search-input">Search</label>
-        <input id="search-input" style={{ border: "1px solid black" }} onChange={onChange} />
+        <input
+          id="search-input"
+          style={{ border: "1px solid black" }}
+          onChange={onChange}
+          ref={searchRef}
+        />
         <button onClick={onClick}>Reset Search</button>
       </div>
       <br />
