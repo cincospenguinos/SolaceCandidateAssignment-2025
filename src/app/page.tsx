@@ -44,13 +44,14 @@ export default function Home({ apiClient = new DefaultApiClient() }) {
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm)
-      );
+      return [
+        advocate.firstName,
+        advocate.lastName,
+        advocate.city,
+        advocate.degree,
+        ...advocate.specialties,
+      ].map(f => f.toLowerCase())
+      .some(f => f.includes(searchTerm.toLowerCase()));
     });
 
     setFilteredAdvocates(filteredAdvocates);

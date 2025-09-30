@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, cleanup } from '@testing-library/react';
 import { act } from 'react';
 import Page, { ApiClient } from './page';
 
@@ -34,6 +34,8 @@ const advocates = [
 	},
 ];
 
+afterEach(cleanup);
+
 test('page shows the advocates provided', async () => {
 	await act(async () => {
 		render(<Page apiClient={new MockApiClient(advocates)}/>)
@@ -54,4 +56,30 @@ test('page allows searching by name', async () => {
 
 	expect(screen.getByText('Smith')).toBeInTheDocument();
 	expect(screen.queryByText('John')).not.toBeInTheDocument();
+});
+
+test('page allows searching by name ignoring case', async () => {
+	await act(async () => {
+		render(<Page apiClient={new MockApiClient(advocates)}/>)
+	});
+
+	await act(async () => {
+		fireEvent.change(screen.getByLabelText('Search'), { target: { value: 'jane' } });
+	});
+
+	expect(screen.getByText('Smith')).toBeInTheDocument();
+	expect(screen.queryByText('John')).not.toBeInTheDocument();
+});
+
+test('page allows searching by specialty ignoring case', async () => {
+	await act(async () => {
+		render(<Page apiClient={new MockApiClient(advocates)}/>)
+	});
+
+	await act(async () => {
+		fireEvent.change(screen.getByLabelText('Search'), { target: { value: 'cRiMiNaL' } });
+	});
+
+	expect(screen.queryByText('Jane')).not.toBeInTheDocument();
+	expect(screen.queryByText('John')).toBeInTheDocument();
 });
